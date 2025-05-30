@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Send, User, Trash2, AlertCircle, Sparkles, Zap, Copy, ThumbsUp, ThumbsDown } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useTheme } from "next-themes"
 
 interface Message {
   id: string
@@ -28,7 +29,7 @@ export default function ChatPage() {
   const [error, setError] = useState<string | null>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-
+   const {theme}=useTheme();
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
@@ -196,7 +197,7 @@ export default function ChatPage() {
 
   return (
 <>
-<Neo color="blue" />
+<Neo color={`${theme ==="light" ?"#5700FF" :"#3737FF"}`} />
     <div className="min-h-screen  p-2 sm:p-4 transition-all duration-500">
       {/* Animated background elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -206,7 +207,7 @@ export default function ChatPage() {
       </div>
 
       <div className="relative mx-auto max-w-4xl h-screen sm:h-auto">
-        <Neo color="blue"/>
+        <Neo color={`${theme ==="light" ?"#5700FF" :"#3737FF"}`} />
         <Card className="h-[100vh] sm:h-[90vh] flex flex-col shadow-2xl border-0bg-transparent backdrop-blur-xl">
           <Neo color="blue"/>
           <CardHeader className="border-b border-slate-200/50 dark:border-slate-700/50 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm p-3 sm:p-6">
