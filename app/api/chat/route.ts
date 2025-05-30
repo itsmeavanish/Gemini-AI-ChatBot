@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai"
 import type { NextRequest } from "next/server"
-
-const genAI = new GoogleGenerativeAI("AIzaSyCeuJWAwNPnhh0mflQkltpjiKwLsivN-dU")
+const apiKey="AIzaSyCeuJWAwNPnhh0mflQkltpjiKwLsivN-dU"
+const genAI = new GoogleGenerativeAI(apiKey)
 
 // Available Gemini models (in order of preference)
 const AVAILABLE_MODELS = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro"]
