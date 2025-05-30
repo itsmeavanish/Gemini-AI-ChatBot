@@ -1,14 +1,15 @@
 "use client"
 
 import type React from "react"
-
+import Neo from "../components/Neo/Neo"
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Send, Bot, User, Trash2, AlertCircle } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { Send, User, Trash2, AlertCircle, Sparkles, Zap, Copy, ThumbsUp, ThumbsDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface Message {
@@ -155,31 +156,81 @@ export default function ChatPage() {
       const lastUserMessage = messages[messages.length - 2]
       if (lastUserMessage.role === "user") {
         setInput(lastUserMessage.content)
-        // Remove the last two messages (user + error response)
         setMessages((prev) => prev.slice(0, -2))
         setError(null)
       }
     }
   }
 
+  const copyMessage = (content: string) => {
+    navigator.clipboard.writeText(content)
+  }
+
+  // Enhanced Logo Component with animations
+  const EnhancedLogo = ({ className, animated = false }: { className?: string; animated?: boolean }) => (
+    <div className={cn("relative flex items-center justify-center", className)}>
+      <div
+        className={cn(
+          "relative rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 p-0.5",
+          animated && "animate-pulse",
+        )}
+      >
+        <div className="rounded-full bg-background p-1">
+          <div className="rounded-full bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 p-2">
+            <Sparkles className="h-full w-full text-white" />
+          </div>
+        </div>
+      </div>
+      {animated && (
+        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 animate-ping" />
+      )}
+    </div>
+  )
+
+  const quickPrompts = [
+    { icon: "🚀", text: "Tell me a fun fact about space", gradient: "from-blue-500 to-cyan-500" },
+    { icon: "📝", text: "Write a short poem about coding", gradient: "from-purple-500 to-pink-500" },
+    { icon: "🔬", text: "Explain quantum computing simply", gradient: "from-green-500 to-emerald-500" },
+    { icon: "🎨", text: "Help me brainstorm creative ideas", gradient: "from-orange-500 to-red-500" },
+  ]
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-2 sm:p-4">
-      <div className="mx-auto max-w-4xl h-screen sm:h-auto">
-        <Card className="h-[100vh] sm:h-[90vh] flex flex-col shadow-xl">
-          <CardHeader className="border-b bg-white/50 backdrop-blur-sm p-3 sm:p-6">
+<>
+<Neo color="blue" />
+    <div className="min-h-screen  p-2 sm:p-4 transition-all duration-500">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-pink-400/10 to-orange-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-indigo-400/5 to-cyan-400/5 rounded-full blur-3xl animate-pulse delay-500" />
+      </div>
+
+      <div className="relative mx-auto max-w-4xl h-screen sm:h-auto">
+        <Neo color="blue"/>
+        <Card className="h-[100vh] sm:h-[90vh] flex flex-col shadow-2xl border-0bg-transparent backdrop-blur-xl">
+          <Neo color="blue"/>
+          <CardHeader className="border-b border-slate-200/50 dark:border-slate-700/50 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm p-3 sm:p-6">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-                <Bot className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
-                <span className="hidden sm:inline">Gemini Chat Assistant</span>
-                <span className="sm:hidden">Gemini Chat</span>
+              <CardTitle className="flex items-center gap-3 text-lg sm:text-xl">
+                <div className="h-6 w-6 sm:h-8 sm:w-8">
+                  <EnhancedLogo />
+                </div>
+                <div className="flex flex-col">
+                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-bold">
+                    <span className="hidden sm:inline">Neo  Chat Assistant</span>
+                    <span className="sm:hidden">Neo Chat</span>
+                  </span>
+                  <span className="text-xs text-muted-foreground font-normal">Made with ❣</span>
+                </div>
               </CardTitle>
-              <div className="flex gap-1 sm:gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
+                <ThemeToggle />
                 {error && (
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={retryLastMessage}
-                    className="gap-1 sm:gap-2 text-orange-600 border-orange-200 text-xs sm:text-sm px-2 sm:px-3"
+                    className="gap-1 sm:gap-2 text-orange-600 border-orange-200 dark:border-orange-800 text-xs sm:text-sm px-2 sm:px-3 hover:bg-orange-50 dark:hover:bg-orange-950/50 transition-all duration-300"
                   >
                     <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span className="hidden sm:inline">Retry</span>
@@ -190,7 +241,7 @@ export default function ChatPage() {
                   size="sm"
                   onClick={clearChat}
                   disabled={messages.length === 0}
-                  className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3"
+                  className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 hover:bg-red-50 dark:hover:bg-red-950/50 transition-all duration-300"
                 >
                   <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">Clear</span>
@@ -201,116 +252,153 @@ export default function ChatPage() {
 
           <CardContent className="flex-1 flex flex-col p-0 min-h-0">
             <ScrollArea className="flex-1 p-2 sm:p-4" ref={scrollAreaRef}>
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-4 sm:space-y-6">
                 {messages.length === 0 && (
-                  <div className="text-center text-muted-foreground py-4 sm:py-8 px-4">
-                    <Bot className="h-8 w-8 sm:h-12 sm:w-12 mx-auto mb-3 sm:mb-4 text-blue-600" />
-                    <h3 className="text-base sm:text-lg font-medium mb-2">Welcome to Gemini Chat</h3>
-                    <p className="mb-3 sm:mb-4 text-sm sm:text-base">Start a conversation by typing a message below.</p>
-                    <div className="flex flex-col sm:flex-row flex-wrap gap-2 justify-center max-w-md mx-auto">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setInput("Tell me a fun fact about space")}
-                        className="text-xs sm:text-sm w-full sm:w-auto"
-                      >
-                        🚀 Space fact
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setInput("Write a short poem about coding")}
-                        className="text-xs sm:text-sm w-full sm:w-auto"
-                      >
-                        📝 Write a poem
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setInput("Explain quantum computing simply")}
-                        className="text-xs sm:text-sm w-full sm:w-auto"
-                      >
-                        🔬 Quantum computing
-                      </Button>
+                  <div className="text-center py-8 sm:py-16 px-4">
+                    <div className="h-16 w-16 sm:h-24 sm:w-24 mx-auto mb-6">
+                      <EnhancedLogo animated />
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-bold mb-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                      Welcome to Neo
+                    </h3>
+                    <p className="mb-8 text-sm sm:text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
+                      Experience the future of AI conversation with stunning visuals and intelligent responses.
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
+                      {quickPrompts.map((prompt, index) => (
+                        <Button
+                          key={index}
+                          variant="outline"
+                          onClick={() => setInput(prompt.text)}
+                          className={cn(
+                            "h-auto p-4 text-left justify-start group hover:scale-105 transition-all duration-300 border-2 hover:border-transparent",
+                            "hover:shadow-lg hover:shadow-blue-500/25 dark:hover:shadow-blue-400/25",
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              "w-8 h-8 rounded-full bg-gradient-to-br flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300",
+                              prompt.gradient,
+                            )}
+                          >
+                            <span className="text-white text-sm">{prompt.icon}</span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="text-sm font-medium text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                              {prompt.text}
+                            </div>
+                          </div>
+                        </Button>
+                      ))}
                     </div>
                   </div>
                 )}
 
-                {messages.map((message) => (
+                {messages.map((message, index) => (
                   <div
                     key={message.id}
                     className={cn(
-                      "flex gap-2 sm:gap-3 max-w-[85%] sm:max-w-[80%]",
+                      "flex gap-3 sm:gap-4 max-w-[85%] sm:max-w-[80%] group animate-in slide-in-from-bottom-2 duration-500",
                       message.role === "user" ? "ml-auto flex-row-reverse" : "mr-auto",
                     )}
+                    style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <Avatar className="h-6 w-6 sm:h-8 sm:w-8 shrink-0 mt-1">
+                    <Avatar className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 mt-1 ring-2 ring-white dark:ring-slate-800 shadow-lg">
                       <AvatarFallback
                         className={cn(
                           message.role === "user"
-                            ? "bg-blue-600 text-white"
+                            ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white"
                             : message.error
-                              ? "bg-red-600 text-white"
-                              : "bg-green-600 text-white",
+                              ? "bg-gradient-to-br from-red-500 to-red-600 text-white"
+                              : "bg-transparent p-0",
                         )}
                       >
                         {message.role === "user" ? (
-                          <User className="h-3 w-3 sm:h-4 sm:w-4" />
+                          <User className="h-4 w-4 sm:h-5 sm:w-5" />
                         ) : message.error ? (
-                          <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                          <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                         ) : (
-                          <Bot className="h-3 w-3 sm:h-4 sm:w-4" />
+                          <EnhancedLogo />
                         )}
                       </AvatarFallback>
                     </Avatar>
 
-                    <div
-                      className={cn(
-                        "rounded-lg px-3 py-2 sm:px-4 sm:py-2 text-sm",
-                        message.role === "user"
-                          ? "bg-blue-600 text-white"
-                          : message.error
-                            ? "bg-red-50 border border-red-200 text-red-800"
-                            : "bg-white border shadow-sm",
-                      )}
-                    >
-                      <div className="whitespace-pre-wrap break-words text-sm sm:text-base leading-relaxed">
-                        {message.content}
-                      </div>
+                    <div className="flex-1 space-y-2">
                       <div
                         className={cn(
-                          "text-xs mt-1 opacity-70",
+                          "rounded-2xl px-4 py-3 sm:px-6 sm:py-4 text-sm sm:text-base shadow-lg backdrop-blur-sm",
                           message.role === "user"
-                            ? "text-blue-100"
+                            ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white ml-4"
                             : message.error
-                              ? "text-red-600"
-                              : "text-muted-foreground",
+                              ? "bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950/50 dark:to-red-900/50 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 mr-4"
+                              : "bg-white/80 dark:bg-slate-800/80 border border-slate-200/50 dark:border-slate-700/50 mr-4",
                         )}
                       >
-                        {message.timestamp.toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                        <div className="whitespace-pre-wrap break-words leading-relaxed">{message.content}</div>
+                        <div className="flex items-center justify-between mt-3 pt-2 border-t border-white/20 dark:border-slate-700/50">
+                          <div
+                            className={cn(
+                              "text-xs opacity-70",
+                              message.role === "user"
+                                ? "text-blue-100"
+                                : message.error
+                                  ? "text-red-600 dark:text-red-400"
+                                  : "text-muted-foreground",
+                            )}
+                          >
+                            {message.timestamp.toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </div>
+                          {message.role === "assistant" && !message.error && (
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => copyMessage(message.content)}
+                                className="h-6 w-6 p-0 hover:bg-white/20 dark:hover:bg-slate-700/50"
+                              >
+                                <Copy className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 hover:bg-white/20 dark:hover:bg-slate-700/50"
+                              >
+                                <ThumbsUp className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 hover:bg-white/20 dark:hover:bg-slate-700/50"
+                              >
+                                <ThumbsDown className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 ))}
 
                 {isStreaming && (
-                  <div className="flex gap-2 sm:gap-3 max-w-[85%] sm:max-w-[80%] mr-auto">
-                    <Avatar className="h-6 w-6 sm:h-8 sm:w-8 shrink-0 mt-1">
-                      <AvatarFallback className="bg-green-600 text-white">
-                        <Bot className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <div className="flex gap-3 sm:gap-4 max-w-[85%] sm:max-w-[80%] mr-auto animate-in slide-in-from-bottom-2">
+                    <Avatar className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 mt-1 ring-2 ring-white dark:ring-slate-800 shadow-lg">
+                      <AvatarFallback className="bg-transparent p-0">
+                        <EnhancedLogo animated />
                       </AvatarFallback>
                     </Avatar>
-                    <div className="bg-white border shadow-sm rounded-lg px-3 py-2 sm:px-4 sm:py-2">
-                      <div className="flex items-center gap-1">
+                    <div className="bg-white/80 dark:bg-slate-800/80 border border-slate-200/50 dark:border-slate-700/50 shadow-lg backdrop-blur-sm rounded-2xl px-4 py-3 sm:px-6 sm:py-4 mr-4">
+                      <div className="flex items-center gap-2">
                         <div className="flex space-x-1">
-                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                          <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                          <div className="w-2 h-2 bg-gradient-to-r from-pink-500 to-red-500 rounded-full animate-bounce"></div>
                         </div>
-                        <span className="text-xs text-muted-foreground ml-2">Thinking...</span>
+                        <span className="text-sm text-muted-foreground">AI is thinking...</span>
+                        <Zap className="h-4 w-4 text-yellow-500 animate-pulse" />
                       </div>
                     </div>
                   </div>
@@ -320,41 +408,48 @@ export default function ChatPage() {
               </div>
             </ScrollArea>
 
-            <div className="border-t bg-white/50 backdrop-blur-sm p-3 sm:p-4">
+            <div className="border-t border-slate-200/50 dark:border-slate-700/50 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm p-3 sm:p-6">
               {error && (
-                <div className="mb-3 p-2 bg-red-50 border border-red-200 rounded-md text-sm text-red-800">
+                <div className="mb-4 p-3 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/50 dark:to-orange-950/50 border border-red-200 dark:border-red-800 rounded-xl text-sm">
                   <div className="flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4 shrink-0" />
-                    <span className="text-xs sm:text-sm break-words">{error}</span>
+                    <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400 shrink-0" />
+                    <span className="text-red-800 dark:text-red-200 break-words">{error}</span>
                   </div>
                 </div>
               )}
-              <form onSubmit={handleSubmit} className="flex gap-2">
-                <Input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type your message..."
-                  disabled={isLoading}
-                  className="flex-1 text-sm sm:text-base"
-                  autoFocus
-                />
+              <form onSubmit={handleSubmit} className="flex gap-3">
+                <div className="relative flex-1">
+                  <Input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Type your message..."
+                    disabled={isLoading}
+                    className="pr-12 h-12 text-sm sm:text-base bg-white/80 dark:bg-slate-800/80 border-slate-200/50 dark:border-slate-700/50 rounded-xl shadow-lg backdrop-blur-sm focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300"
+                    autoFocus
+                  />
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                  </div>
+                </div>
                 <Button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  size="icon"
-                  className="shrink-0 h-9 w-9 sm:h-10 sm:w-10"
+                  className="h-12 w-12 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:scale-100"
                 >
-                  <Send className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <Send className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </form>
-              <p className="text-xs text-muted-foreground mt-2 text-center leading-tight">
-                <span className="hidden sm:inline">Powered by Google Gemini AI • Using gemini-1.5-flash model</span>
-                <span className="sm:hidden">Powered by Gemini AI</span>
+              <p className="text-xs text-muted-foreground mt-3 text-center leading-tight">
+                <span className="hidden sm:inline">
+                  ✨ Powered by Google Gemini AI • Enhanced with beautiful design
+                </span>
+                <span className="sm:hidden">✨ Powered by Gemini AI</span>
               </p>
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
+    </>
   )
 }

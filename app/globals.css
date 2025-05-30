@@ -55,33 +55,67 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Mobile-first responsive design */
-@media (max-width: 640px) {
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 3px;
+/* Enhanced animations and effects */
+@keyframes gradient-x {
+  0%,
+  100% {
+    transform: translateX(0%);
   }
-
-  /* Ensure proper touch scrolling on mobile */
-  .scroll-area {
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Prevent zoom on input focus on iOS */
-  input[type="text"],
-  input[type="email"],
-  input[type="search"],
-  textarea {
-    font-size: 16px;
+  50% {
+    transform: translateX(100%);
   }
 }
 
-/* Custom scrollbar styles */
+@keyframes gradient-y {
+  0%,
+  100% {
+    transform: translateY(0%);
+  }
+  50% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes gradient-xy {
+  0%,
+  100% {
+    transform: translate(0%, 0%);
+  }
+  25% {
+    transform: translate(100%, 0%);
+  }
+  50% {
+    transform: translate(100%, 100%);
+  }
+  75% {
+    transform: translate(0%, 100%);
+  }
+}
+
+.animate-gradient-x {
+  animation: gradient-x 15s ease infinite;
+}
+
+.animate-gradient-y {
+  animation: gradient-y 15s ease infinite;
+}
+
+.animate-gradient-xy {
+  animation: gradient-xy 15s ease infinite;
+}
+
+/* Custom scrollbar for both themes */
 .scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: rgb(203 213 225) transparent;
+  scrollbar-color: rgb(148 163 184 / 0.5) transparent;
+}
+
+.dark .scrollbar-thin {
+  scrollbar-color: rgb(71 85 105 / 0.5) transparent;
 }
 
 .scrollbar-thin::-webkit-scrollbar {
@@ -93,43 +127,114 @@
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: rgb(203 213 225);
+  background: linear-gradient(to bottom, rgb(148 163 184 / 0.5), rgb(100 116 139 / 0.5));
   border-radius: 3px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(148 163 184);
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, rgb(71 85 105 / 0.5), rgb(51 65 85 / 0.5));
 }
 
-/* Animation for typing indicator */
-@keyframes bounce {
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, rgb(148 163 184), rgb(100 116 139));
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, rgb(71 85 105), rgb(51 65 85));
+}
+
+/* Enhanced bounce animation */
+@keyframes enhanced-bounce {
   0%,
   80%,
   100% {
-    transform: scale(0);
+    transform: scale(0) rotate(0deg);
+    opacity: 0.7;
   }
   40% {
-    transform: scale(1);
+    transform: scale(1) rotate(180deg);
+    opacity: 1;
   }
 }
 
-.animate-bounce {
-  animation: bounce 1.4s infinite ease-in-out both;
+.animate-enhanced-bounce {
+  animation: enhanced-bounce 1.4s ease-in-out infinite;
 }
 
-/* Smooth message appearance */
-.message-appear {
-  animation: messageSlideIn 0.3s ease-out;
-}
-
-@keyframes messageSlideIn {
+/* Smooth message slide-in */
+@keyframes slide-in-from-bottom {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-in {
+  animation-fill-mode: both;
+}
+
+.slide-in-from-bottom-2 {
+  animation: slide-in-from-bottom 0.5s ease-out;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Gradient text animation */
+@keyframes gradient-text {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-text {
+  background-size: 200% 200%;
+  animation: gradient-text 3s ease infinite;
+}
+
+/* Enhanced focus states */
+.focus-enhanced:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 0 20px rgba(59, 130, 246, 0.2);
+  transform: scale(1.02);
+  transition: all 0.3s ease;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  /* Prevent zoom on input focus on iOS */
+  input[type="text"],
+  input[type="email"],
+  input[type="search"],
+  textarea {
+    font-size: 16px;
+  }
+
+  /* Enhanced touch targets */
+  button {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 
@@ -145,4 +250,19 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Theme transition */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom selection colors */
+::selection {
+  background: rgba(59, 130, 246, 0.2);
+  color: inherit;
+}
+
+.dark ::selection {
+  background: rgba(59, 130, 246, 0.3);
 }
